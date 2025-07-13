@@ -5,7 +5,7 @@ from FeiPub import Gfuns, Mfuns, IFuns
 
 
 data_path = './dataset/'
-data_name = 'Mnist10k'  
+data_name = 'Aloi'  
 X, y_true, N, dim, k = IFuns.loadmat("{}{}.mat".format(data_path,data_name))
 
 knn = 100
