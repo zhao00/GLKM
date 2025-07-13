@@ -1,14 +1,16 @@
 # distutils: language = c++
-from GKM_ cimport GKM
+cimport numpy as np
 import numpy as np
+np.import_array()
+from GKM_ cimport GKM
 
 # Define a Python class that wraps around the C++ GKM class
 cdef class PyGKM:
-    cdef GKM* cpp_gkm
+    cdef GKM *cpp_gkm
 
-    def __cinit__(self, NN,  NND,  c_true, debug=0):
+    def __cinit__(self, np.ndarray[int, ndim=2] NN, np.ndarray[double, ndim=2]  NND, int c_true, int debug):
 
-        self.cpp_gkm = new GKM(NN, NND, c_true, debug=0)
+        self.cpp_gkm = new GKM(NN, NND, c_true, debug)
 
     def opt(self):
         self.cpp_gkm.opt()

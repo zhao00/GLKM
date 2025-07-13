@@ -41,38 +41,77 @@
 # # python setup.py build_ext --inplace
 
 
+# import os
+# import numpy
+# from Cython.Build import cythonize
+# from setuptools import setup, Extension
+
+# def configuration():
+#     cpp_version = "c++17"
+#     define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")]
+#     if os.name == "nt":
+#         ext_comp_args = ['/openmp']
+#         ext_link_args = ['/openmp']
+
+#         # library_dirs = [cg.mpir_path]     
+#         libraries = []
+#     else:
+#         ext_comp_args = ['-fopenmp', f'-std={cpp_version}']
+#         ext_link_args = ['-fopenmp', f'-std={cpp_version}']
+#         libraries = ["m"]
+
+#     extensions = [
+#         Extension(
+#             'GKM_',
+#             sources=['GKM_.pyx'],
+#             include_dirs=[numpy.get_include()],
+#             language="c++",
+#             extra_compile_args=ext_comp_args,
+#             extra_link_args=ext_link_args,
+#             libraries=libraries
+#         )
+#     ]
+
+#     return extensions
+
+# if __name__ == '__main__':
+#     setup(
+#         name='GKM',
+#         ext_modules=cythonize(configuration(), compiler_directives={'language_level': 3}),
+#     )
+
+
 import os
 import numpy
 from Cython.Build import cythonize
 from setuptools import setup, Extension
 
-def configuration():
-    cpp_version = "c++17"
+def get_extensions():
     if os.name == "nt":
-        ext_comp_args = ['/']
-        ext_link_args = []
+        # MSVC 编译器下的 C++17 写法
+        compile_args = ['/std:c++17']
+        link_args = ["psapi.lib"]
         libraries = []
     else:
-        ext_comp_args = ['-fopenmp', f'-std={cpp_version}']
-        ext_link_args = ['-fopenmp', f'-std={cpp_version}']
-        libraries = ["m"]
+        compile_args = ['-fopenmp', '-std=c++17']
+        link_args = ['-fopenmp', '-std=c++17']
+        libraries = ['m']
 
     extensions = [
         Extension(
             'GKM_',
-            sources=['GKM_.pyx'],
-            include_dirs=[numpy.get_include()],
-            language="c++",
-            extra_compile_args=ext_comp_args,
-            extra_link_args=ext_link_args,
+            sources=['GKM_.pyx', 'CppFuns.cpp'],  # 加入 .cpp 文件如果有
+            language='c++',
+            include_dirs=[numpy.get_include(),'CppFuns.h'],
+            extra_compile_args=compile_args,
+            extra_link_args=link_args,
             libraries=libraries
         )
     ]
-
     return extensions
 
 if __name__ == '__main__':
     setup(
         name='GKM',
-        ext_modules=cythonize(configuration(), compiler_directives={'language_level': 3}),
+        ext_modules=cythonize(get_extensions(), compiler_directives={'language_level': 3}),
     )

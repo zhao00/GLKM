@@ -9,12 +9,13 @@ def configuration(parent_package='', top_path=None):
     config = Configuration('FLK', parent_package, top_path)
 
     config.add_extension('flk_',
-                         sources=['flk_.pyx', 'CppFuns.cpp'],
-                         include_dirs=[numpy.get_include(), 'CppFuns.h'],
+                         sources=['flk_.pyx'],
+                         include_dirs=[numpy.get_include(),],
                          language="c++",
 
                         #  extra_compile_args=cg.ext_comp_args,
                         #  extra_link_args=cg.ext_link_args,
+
                         #  library_dirs=cg.library_dirs,
                         #  libraries=cg.libraries,
 

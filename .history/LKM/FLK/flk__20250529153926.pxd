@@ -1,8 +1,8 @@
 from libcpp.vector cimport vector
 from libcpp cimport bool
 
-# cdef extern from "CppFuns.cpp":
-#     pass
+cdef extern from "CppFuns.cpp":
+    pass
 
 cdef extern from "flk.cpp":
     pass

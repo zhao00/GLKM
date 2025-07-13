@@ -6,20 +6,9 @@
 #include<vector>
 #include <unordered_map>
 #include<set>
-#include "CppFuns.h"
-// #include <sstream>
-// #ifdef _WIN32
-// #define WIN32_LEAN_AND_MEAN
-// #include <windows.h>
-// #include <psapi.h>
-// #endif
-
-// #include <windows.h>
-// #include <psapi.h>
-
-using namespace std;
 
 class GKM{
+
 
 private:
     int c_true;

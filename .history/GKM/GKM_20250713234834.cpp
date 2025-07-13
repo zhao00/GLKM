@@ -1,66 +1,55 @@
 #include "GKM.h"
-
-// #include <iostream>
-
-// void printMemoryUsage(const std::string& tag = "") {
-//     PROCESS_MEMORY_COUNTERS_EX pmc;
-//     if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc))) {
-//         SIZE_T memUsedKB = pmc.WorkingSetSize / 1024;
-//         std::cout << "[MEMORY] " << tag << " - WorkingSetSize: " << memUsedKB << " KB" << std::endl;
-//     }
-// }
-
+void printMemoryMB(const std::string& tag) {
+    std::ifstream status("/proc/self/status");
+    std::string line;
+    while (std::getline(status, line)) {
+        if (line.rfind("VmRSS:", 0) == 0) {
+            long kb = std::stol(line.substr(line.find_first_of("0123456789")));
+            std::cout << "[MEM] " << tag << ": " << kb / 1024.0 << " MB" << std::endl;
+            break;
+        }
+    }
+}
 
 GKM::GKM(){}
 
 GKM::GKM(std::vector<std::vector<int>> &NN,std::vector<std::vector<double>> &NND,int c_true, int debug=0)
     :NN(NN), NND(NND), c_true(c_true), debug(debug){
-    
+    printMemoryMB("initilization begin");
     if(debug==1){
         std::cout<<"start!"<<std::endl;
     }
 
     this->knn = NN[0].size();
-    // if(debug==1){
-    //     std::cout<<"knn finished!"<<std::endl;
-    // }
-
-    //找到NND的最大值gamma
-    std::vector<double> last_column;
-    for(auto& row:NND){
-        last_column.push_back(row.back());
+    if(debug==1){
+        std::cout<<"knn finished!"<<std::endl;
     }
-    this->max_distance = *std::max_element(last_column.begin(),last_column.end());
-    // std::cout<<"maximum 2dvec finished!"<<std::endl;
-        
-    cf::symmetry(this->NN, this->NND, 1, max_distance);       //还是不行
-
-    // this->max_distance = maximum_2Dvec(NND);
-
-    // if(debug==1){
-    //     std::cout<<"max_distance finished!\t"<<max_distance<<::endl;
-    // }
-    // printMemoryUsage("Before symmetry");
-    // this->symmetry(this->NN, this->NND);    //对称化时内存爆了
-    // std::cout<<"symmetry finished!"<<std::endl;
-    // printMemoryUsage("After symmetry");
+    this->max_distance = maximum_2Dvec(NND);
+    printMemoryMB("max distance finished");
+    if(debug==1){
+        std::cout<<"max_distance finished!\t"<<max_distance<<::endl;
+    }
+    this->symmetry(this->NN, this->NND);
+    printMemoryMB("symmetry finish");
     // for(int i=0;i<this->NN.size();++i){
     //     for(int j=0;j<this->NN[i].size();++j)
     //         std::cout<<this->NN[i][j]<<" ";
     //     std::cout<<std::endl;
     // }
     // std::cout<<this->max_distance<<std::endl;
-    // if(debug==1){
-    //     std::cout<<"symetry finished!"<<std::endl;
-    // }
+    if(debug==1){
+        std::cout<<"symetry finished!"<<std::endl;
+    }
     initializeClusters();
-    // printMemoryUsage("After initializeClusters");
+    printMemoryMB("initializeClusters finish");
     buildTree();
-    // printMemoryUsage("After buildTree");
+    printMemoryMB("buildTree finish");
+
 }
 
 
 GKM::~GKM(){}
+
 
 
 //void GKM::symmetry(std::vector<std::vector<int>> &NN, std::vector<std::vector<double>> &NND);
@@ -128,6 +117,7 @@ void GKM::symmetry(std::vector<std::vector<int>> &NN, std::vector<std::vector<do
         std::cout<<"symmetry finish!"<<std::endl;
     }
 }
+
 double GKM::maximum_2Dvec(std::vector<std::vector<double>> &Vec){
     int N = Vec.size();
     std::vector<double> tmp(N, 0);
@@ -141,7 +131,6 @@ double GKM::maximum_2Dvec(std::vector<std::vector<double>> &Vec){
 }
 
 void GKM::initializeClusters(){
-    // std::cout<<"initializing clusters"<<std::endl;
     N = NN.size();
     labels.resize(N);
     clusters_to_samples.resize(N);
@@ -149,10 +138,7 @@ void GKM::initializeClusters(){
     nearest_clusters.resize(N);
     c_now = N;
 
-    for(int i=0; i<N; ++i){     //对于大数据集，这个步骤慢吗？
-        // if(i%1000==0){
-        //     std::cout<<"\t i="<<i<<std::endl;
-        // }
+    for(int i=0; i<N; ++i){
         labels[i] = i;
         clusters_to_samples[i].push_back(i);
     }
@@ -176,11 +162,10 @@ std::vector<int> GKM::replace_with_continuous(const std::vector<int>& nums) {
 }
 
 void GKM::buildTree(){
-    // std::cout<<"building tree"<<std::endl;
+
+
     for(int i = 0; i < N; ++i) { // Loop over all samples
-        // if(i%1000==0){
-        //     std::cout<<"\t i="<<i<<std::endl;
-        // }
+
         for(size_t index = 0; index < NN[i].size(); ++index) { // Loop over the neighbors of sample i
             int j = NN[i][index]; // j is the neighbor of i
             if(i==j){
@@ -210,15 +195,6 @@ void GKM::opt(){
             //labels[0] = -1;
             break;  
         }
-        // if(c_now%1000==0){
-        //     std::cout<<"c_now: "<<c_now<<std::endl;
-        // }
-        // if(c_now%20000==0){
-        //     std::ostringstream oss;
-        //     oss << "c_now = " << c_now;
-        //     printMemoryUsage(oss.str());
-        // }
-
         //for (auto it = tree.begin(); it != tree.end(); ++it) {
         //    std::cout << std::get<0>(*it) << " " << std::get<1>(*it) << " " << std::get<2>(*it) << std::endl;
         //}/////////////////////在每一次循环开始前输出tree/////////////////////////////////////////
@@ -226,6 +202,9 @@ void GKM::opt(){
         tree.erase(tree.begin());
 
         double min_distance =std::get<0>(min_element);
+        // if(min_distance<0){
+            std::cout<<"min_distance = "<<min_distance<<std::endl;
+        // }
         int i = std::min(std::get<1>(min_element),std::get<2>(min_element));
         int j = std::max(std::get<1>(min_element),std::get<2>(min_element));
 
@@ -243,7 +222,7 @@ void GKM::opt(){
             for(int i=0;i<labels.size();i++){
                 std::cout<<labels[i]<<" ";
             }
-            std::cout<<std::endl;
+            std::cout<<endl;
         }
     }
     labels = replace_with_continuous(labels);
@@ -272,8 +251,8 @@ void GKM::mergeClusters(int i, int j, double min_distance){
     clusters_to_samples[i].insert(clusters_to_samples[i].end(), clusters_to_samples[j].begin(), clusters_to_samples[j].end());
     clusters_to_samples[j].clear();
 
-    std::set<std::tuple<double, int, int>> List_2k;
-    for (auto& [p, distance] : nearest_clusters[i]) {
+    std::set<std::tuple<double, int, int>> List_2k;     //set会自动排序
+    for (auto& [p, distance] : nearest_clusters[i]) {   //这里可以并行吗？
         //std::cout<<"*****"<<i<<" "<<p<<std::endl;
         tree.erase({distance, std::min(i,p), std::max(i,p)});
         int n_p = clusters_to_samples[p].size();
@@ -297,7 +276,7 @@ void GKM::mergeClusters(int i, int j, double min_distance){
         }
     }
 
-    std::vector<std::tuple<int,int>> remove_list;
+    std::vector<std::tuple<int,int>> remove_list;   // remove_lsit的作用是把簇j和其近邻簇的信息在nearest_clusters数据结构中删除
     for(auto& [p,distance] : nearest_clusters[j]){
         //std::cout<<j<<" "<<p<<"*****"<<std::endl;
         tree.erase({distance, std::min(j,p), std::max(j,p)});
@@ -318,8 +297,8 @@ void GKM::mergeClusters(int i, int j, double min_distance){
     auto it = List_2k.begin();
     for (int count = 0; count < knn && it != List_2k.end(); ++count, ++it) {    // 前k个保留
         auto triplet = *it;
-        tree.insert(triplet);
-        nearest_clusters[std::get<1>(triplet)][std::get<2>(triplet)] = std::get<0>(triplet);
+        tree.insert(triplet);   //tree的更新是通过先删除后插入的方式，此处为插入，在前面完成了删除
+        nearest_clusters[std::get<1>(triplet)][std::get<2>(triplet)] = std::get<0>(triplet);    //nearest_clusters的更新可以直接完成
         nearest_clusters[std::get<2>(triplet)][std::get<1>(triplet)] = std::get<0>(triplet);
     }
     for (; it != List_2k.end(); ++it) {     //后k个截断

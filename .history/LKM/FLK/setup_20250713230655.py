@@ -1,7 +1,7 @@
 import os
 import numpy
 from Cython.Build import cythonize
-# from FeiPub import cg
+from FeiPub import cg
 
 def configuration(parent_package='', top_path=None):
     from numpy.distutils.misc_util import Configuration
@@ -9,14 +9,15 @@ def configuration(parent_package='', top_path=None):
     config = Configuration('FLK', parent_package, top_path)
 
     config.add_extension('flk_',
-                         sources=['flk_.pyx', 'CppFuns.cpp'],
-                         include_dirs=[numpy.get_include(), 'CppFuns.h'],
+                         sources=['flk_.pyx'],
+                         include_dirs=[numpy.get_include(), cg.cppfuns_path],
                          language="c++",
 
-                        #  extra_compile_args=cg.ext_comp_args,
-                        #  extra_link_args=cg.ext_link_args,
-                        #  library_dirs=cg.library_dirs,
-                        #  libraries=cg.libraries,
+                         extra_compile_args=cg.ext_comp_args,
+                         extra_link_args=cg.ext_link_args,
+
+                         library_dirs=cg.library_dirs,
+                         libraries=cg.libraries,
 
                          #  define_macros=cg.define_macros,
                          )

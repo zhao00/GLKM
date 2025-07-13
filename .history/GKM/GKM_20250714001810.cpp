@@ -150,9 +150,9 @@ void GKM::initializeClusters(){
     c_now = N;
 
     for(int i=0; i<N; ++i){     //对于大数据集，这个步骤慢吗？
-        // if(i%1000==0){
-        //     std::cout<<"\t i="<<i<<std::endl;
-        // }
+        if(i%1000==0){
+            std::cout<<"\t i="<<i<<std::endl;
+        }
         labels[i] = i;
         clusters_to_samples[i].push_back(i);
     }
