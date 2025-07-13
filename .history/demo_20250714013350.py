@@ -17,7 +17,7 @@ obj.opt()
 y_pred0 = obj.y_pred
 print('----')
 
-CD  = True
+CD  = False
 if CD:
     ## Following is the coordinate descent fine-tuning stage of the objective function, which is optional.
     if not obj.connected:  
@@ -36,5 +36,4 @@ purity = Mfuns.purity(y_true, y_pred)
 ari = Mfuns.ari(y_true, y_pred)
 print(f'{data_name}: \tacc={acc:.3f}, nmi={nmi:.3f}, purity={purity:.3f}')
 
-## Gisette, acc=0.913, nmi=0.589, purity=0.913, (knn=80)
-## Aloi,    acc=0.639, nmi=0.790, purity=0.655, (knn=100)
+
