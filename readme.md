@@ -12,7 +12,9 @@ python setup.py build_ext --inplace
 
 ### requirements
 ```bash
+python (>=3.6, <3.12 recommended)
 cython
+setuptools==57.5.0
 ```
 
 ### Usage
