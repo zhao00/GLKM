@@ -70,8 +70,8 @@ void GKM::symmetry(std::vector<std::vector<int>> &NN, std::vector<std::vector<do
         std::cout<<"symmetry start!"<<std::endl;
         std::cout<<NN.size()<<std::endl;
     }
-    int N = NN.size();
-    int knn = NN[0].size();
+    size_t N = NN.size();
+    size_t knn = NN[0].size();
 
     std::vector<std::vector<int>> RNN;
     std::vector<std::vector<double>> RNND;
@@ -129,7 +129,7 @@ void GKM::symmetry(std::vector<std::vector<int>> &NN, std::vector<std::vector<do
     }
 }
 double GKM::maximum_2Dvec(std::vector<std::vector<double>> &Vec){
-    int N = Vec.size();
+    size_t N = Vec.size();
     std::vector<double> tmp(N, 0);
 
     for(int i = 0; i < N; i++){

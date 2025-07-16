@@ -36,6 +36,7 @@ flk::flk(vector<vector<int>> &NN, vector<vector<double>> &NND, double max_d, int
     this->local = true;
 }
 
+
 void flk::check_NN(){
     for (unsigned int i = 0; i < NN.size(); i++){
         if (NN[i][0] != i){

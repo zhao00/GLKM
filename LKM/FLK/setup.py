@@ -10,7 +10,7 @@ def configuration(parent_package='', top_path=None):
 
     config.add_extension('flk_',
                          sources=['flk_.pyx', 'CppFuns.cpp'],
-                         include_dirs=[numpy.get_include(), 'CppFuns.h'],
+                         include_dirs=[numpy.get_include(), '.'],
                          language="c++",
 
                         #  extra_compile_args=cg.ext_comp_args,

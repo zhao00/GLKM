@@ -27,7 +27,7 @@ private:
     std::vector<std::vector<int>> NN;
     std::vector<std::vector<double>> NND;
     double max_distance;
-    int knn;
+    size_t  knn;
     int debug = 0;
     
 
