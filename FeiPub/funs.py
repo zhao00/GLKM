@@ -72,10 +72,7 @@ def loadmat(path, to_dense=True):
     X = X.astype(np.float64)
     return X, y_true, N, dim, c_true
 
-def load_toy(file_path):
-    """
-    加载指定路径的 .mat 文件。
-    """
+def load_toy(file_path):    ## grid dataset
     try:
         # 加载 .mat 文件
         data = sio.loadmat(file_path)
