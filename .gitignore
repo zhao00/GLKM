@@ -1,1 +1,6 @@
 .history/
+__pycache__/
+*.pyd
+GKM/GKM_.cpp
+LKM/FLK/flk_.cpp
+build/
