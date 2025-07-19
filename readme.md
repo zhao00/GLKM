@@ -29,7 +29,7 @@ see demo.py
 
 ### Cite
 ```bash
-@article{YUAN2026112140,
+@article{yuan2025efficient,
 title = {Efficient greedy optimization method for k-means},
 journal = {Pattern Recognition},
 volume = {171},
@@ -38,5 +38,6 @@ year = {2026},
 issn = {0031-3203},
 doi = {https://doi.org/10.1016/j.patcog.2025.112140},
 url = {https://www.sciencedirect.com/science/article/pii/S0031320325008003},
-author = {Yuan Yuan and Lin Zhao and Shenfei Pei and Feiping Nie},
+author = {Yuan Yuan and Lin Zhao and Shenfei Pei and Feiping Nie}
+}
 ```
